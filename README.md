@@ -2,6 +2,30 @@
 
 A small website for running a Secret Santa draw among friends: find your name, draw who you're giving a gift to, then fill in your own wishlist. It comes with a 3D scene where the name pops out of a gift box.
 
+![Pick your name from the stockings on the garland](docs/screenshots/home.jpg)
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/draw.jpg" alt="The name pops out of the gift"></td>
+    <td width="50%"><img src="docs/screenshots/reveal.jpg" alt="Who you're giving to and their wishlist"></td>
+  </tr>
+  <tr>
+    <td align="center">The name pops out of the gift</td>
+    <td align="center">Who you're giving to and what they want</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td width="72%"><img src="docs/screenshots/wishlists.jpg" alt="Everyone's wishlists"></td>
+    <td width="28%"><img src="docs/screenshots/phone.jpg" alt="Phone view"></td>
+  </tr>
+  <tr>
+    <td align="center">Everyone's wishlists: price, description, link and photo</td>
+    <td align="center">Works on phones</td>
+  </tr>
+</table>
+
 - Nobody can see who gives to whom, not even the admin: each pair is encrypted with the participant's personal token, and that token lives only in their browser.
 - Wishlists are public, so you can browse them without taking part.
 - English and Russian interface.
