@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="%LANG%">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#141238" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- the font does not block the first paint -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <title>%TITLE%</title>
+    <!--santa-config-->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎁</text></svg>" />
+    <style>
+      /* Splash: shown immediately, before JS loads; hidden once the 3D scene is ready */
+      #splash {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        background: linear-gradient(#0b0f33, #241f58 55%, #7a4a63 90%, #b0706a);
+        color: #fff;
+        font-family: Nunito, ui-rounded, 'SF Pro Rounded', system-ui, sans-serif;
+        transition: opacity 0.7s ease, visibility 0.7s;
+      }
+      #splash.done { opacity: 0; visibility: hidden; }
+      .sp-center { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+      .sp-gift { position: relative; width: 96px; height: 104px; animation: sp-hop 1.2s cubic-bezier(.4, 0, .2, 1) infinite; }
+      .sp-box {
+        position: absolute; left: 6px; right: 6px; bottom: 0; height: 64px; border-radius: 10px;
+        background: linear-gradient(90deg, transparent 40%, #fff6e6 40% 60%, transparent 60%), #d8322c;
+        box-shadow: inset 0 -8px 0 rgba(0, 0, 0, .15), 0 14px 24px rgba(0, 0, 0, .35);
+      }
+      .sp-lid {
+        position: absolute; left: 0; right: 0; top: 26px; height: 22px; border-radius: 8px;
+        background: linear-gradient(90deg, transparent 40%, #fff6e6 40% 60%, transparent 60%), #e8463f;
+        box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .12);
+        transform-origin: 20% 100%;
+        animation: sp-lid 1.2s cubic-bezier(.4, 0, .2, 1) infinite;
+      }
+      .sp-lid::before, .sp-lid::after {
+        content: ''; position: absolute; top: -22px; width: 28px; height: 24px;
+        border: 7px solid #fff6e6; border-radius: 50% 50% 40% 40%;
+      }
+      .sp-lid::before { left: 18px; transform: rotate(-24deg); }
+      .sp-lid::after { right: 18px; transform: rotate(24deg); }
+      .sp-shadow {
+        position: absolute; left: 50%; bottom: -14px; width: 90px; height: 12px; margin-left: -45px;
+        border-radius: 50%; background: rgba(0, 0, 0, .3); animation: sp-shadow 1.2s cubic-bezier(.4, 0, .2, 1) infinite;
+      }
+      @keyframes sp-hop { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-22px) rotate(-3deg); } 60% { transform: translateY(-16px) rotate(3deg); } }
+      @keyframes sp-lid { 0%, 25%, 100% { transform: none; } 45% { transform: translateY(-10px) rotate(-12deg); } 60% { transform: translateY(-4px) rotate(4deg); } }
+      @keyframes sp-shadow { 0%, 100% { transform: scale(1); opacity: 1; } 40% { transform: scale(.7); opacity: .5; } }
+      .sp-title { font-weight: 900; font-size: 34px; letter-spacing: -.01em; text-shadow: 0 3px 0 #d8322c, 0 6px 0 #a3201b, 0 10px 22px rgba(0, 0, 0, .4); }
+      .sp-bar { width: 200px; height: 8px; border-radius: 99px; background: rgba(255, 255, 255, .15); overflow: hidden; }
+      .sp-bar i {
+        display: block; height: 100%; width: 8%; border-radius: inherit;
+        background: repeating-linear-gradient(-45deg, #d8322c 0 8px, #fff 8px 16px);
+        background-size: 22px 100%;
+        animation: sp-stripes .6s linear infinite;
+        transition: width .4s ease;
+      }
+      @keyframes sp-stripes { to { background-position: 22px 0; } }
+      .sp-hint { font-weight: 700; font-size: 15px; color: #d9d3f5; }
+      .sp-flake { position: absolute; top: -10px; border-radius: 50%; background: #fff; opacity: .8; animation: sp-fall linear infinite; }
+      @keyframes sp-fall { to { transform: translate3d(var(--dx), 105vh, 0); } }
+      @media (prefers-reduced-motion: reduce) { .sp-gift, .sp-lid, .sp-shadow, .sp-flake { animation: none; } }
+    </style>
+  </head>
+  <body>
+    <div id="splash">
+      <div class="sp-center">
+        <div class="sp-gift"><div class="sp-box"></div><div class="sp-lid"></div><div class="sp-shadow"></div></div>
+        <div class="sp-title">%TITLE%</div>
+        <div class="sp-bar"><i id="sp-progress"></i></div>
+        <div class="sp-hint">%SPLASH_HINT%</div>
+      </div>
+    </div>
+    <script>
+      (function () {
+        var el = document.getElementById('splash');
+        // snowflakes
+        for (var i = 0; i < 40; i++) {
+          var f = document.createElement('span');
+          var s = 2 + Math.random() * 4;
+          f.className = 'sp-flake';
+          f.style.cssText =
+            'left:' + Math.random() * 100 + '%;width:' + s + 'px;height:' + s + 'px;--dx:' + (Math.random() * 60 - 30) + 'px;' +
+            'animation-duration:' + (5 + Math.random() * 6) + 's;animation-delay:' + -Math.random() * 10 + 's;opacity:' + (0.4 + Math.random() * 0.5);
+          el.appendChild(f);
+        }
+        var bar = document.getElementById('sp-progress');
+        var shown = 0.08;
+        window.__splash = {
+          progress: function (p) {
+            if (p > shown) {
+              shown = p;
+              bar.style.width = Math.round(p * 100) + '%';
+            }
+          },
+          done: function () {
+            if (!el) return;
+            bar.style.width = '100%';
+            window.__readyAt = Math.round(performance.now());
+            var node = el;
+            el = null;
+            setTimeout(function () {
+              node.classList.add('done');
+              setTimeout(function () { node.remove(); }, 800);
+            }, 250);
+          },
+        };
+      })();
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "name": "secret-santa",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite web",
+    "dev:server": "node --watch server.js",
+    "build": "vite build web",
+    "start": "node server.js",
+    "pack-models": "bash scripts/pack-models.sh"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.4.1",
+    "compression": "^1.8.2",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@gltf-transform/cli": "^4.5.1",
+    "@vitejs/plugin-react": "^5.0.4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "three": "^0.180.0",
+    "vite": "^7.1.9"
+  },
+  "allowScripts": {
+    "better-sqlite3@12.11.1": true,
+    "esbuild@0.28.2": true
+  },
+  "description": "Secret Santa: draw, wishlists and a 3D gift scene",
+  "engines": {
+    "node": ">=20"
+  }
+}

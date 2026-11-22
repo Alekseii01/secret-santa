@@ -1,0 +1,571 @@
+:root {
+  --cream: #fff8ec;
+  --cream-2: #f6ead4;
+  --line: #ead9bb;
+  --ink: #3a2a1f;
+  --ink-soft: #7d6753;
+  --red: #d8322c;
+  --red-dark: #a3201b;
+  --green: #2f8a55;
+  --round: Nunito, system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body {
+  background: #1a1838;
+  color: var(--ink);
+  font: 600 16px/1.45 var(--round);
+  -webkit-tap-highlight-color: transparent;
+}
+.scene { position: fixed; inset: 0; }
+.scene canvas { display: block; }
+
+.ui {
+  position: relative;
+  z-index: 1;
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  padding: max(18px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
+  pointer-events: none;
+}
+.ui > * > *, .title { pointer-events: auto; }
+
+/* Заголовок как логотип игрушки: белый, толстый, с красной «подложкой» */
+.title { text-align: center; }
+h1 {
+  margin: 0;
+  font: 900 clamp(38px, 7vw, 60px)/1 var(--round);
+  color: #fff;
+  letter-spacing: -0.01em;
+  text-shadow: 0 3px 0 var(--red), 0 6px 0 var(--red-dark), 0 12px 24px rgba(10, 6, 30, 0.45);
+}
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 46vh;
+}
+@media (min-width: 901px) {
+  .ui { grid-template-columns: 1fr minmax(380px, 440px); grid-template-rows: 1fr; gap: 24px; padding: 32px 40px; }
+  .title { grid-column: 1; align-self: start; text-align: left; }
+  .stage { grid-column: 2; grid-row: 1; justify-content: center; padding-top: 0; }
+}
+
+/* Конверт авиапочты: красно-белая кайма, марка с подарком */
+.card {
+  position: relative;
+  width: min(460px, 100%);
+  padding: 22px 22px 20px;
+  border: 9px solid transparent;
+  border-radius: 20px;
+  background:
+    linear-gradient(var(--cream), var(--cream)) padding-box,
+    repeating-linear-gradient(135deg, var(--red) 0 13px, #fff 13px 26px) border-box;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.12), 0 22px 44px rgba(10, 6, 30, 0.45);
+  animation: drop 0.4s cubic-bezier(0.2, 1.3, 0.4, 1);
+}
+@keyframes drop { from { opacity: 0; transform: translateY(18px) scale(0.97); } }
+
+h2 { font: 900 28px/1.1 var(--round); margin: 0 0 6px; }
+h3 { font: 900 20px/1.2 var(--round); margin: 0 0 6px; }
+.muted { color: var(--ink-soft); margin: 4px 0 14px; }
+.small { font-size: 14px; }
+.note {
+  font: 900 26px var(--round);
+  color: #fff;
+  text-shadow: 0 2px 0 var(--red-dark), 0 6px 18px rgba(0, 0, 0, 0.4);
+  margin: 0 0 20px;
+}
+
+button { font: inherit; color: inherit; cursor: pointer; }
+
+/* Имена — объёмные «игрушечные» кнопки */
+.tags { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 6px 0 14px; }
+.tag {
+  padding: 12px 10px 10px;
+  border: 2px solid var(--line);
+  border-bottom-width: 6px;
+  border-radius: 16px;
+  background: #fff;
+  font: 900 21px/1.1 var(--round);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  transition: transform 0.1s, border-color 0.15s;
+}
+.tag:hover:not(:disabled) { transform: translateY(-2px); border-color: #f0b9a4; }
+.tag:active:not(:disabled) { transform: translateY(3px); border-bottom-width: 3px; margin-top: 3px; }
+.tag:disabled { cursor: not-allowed; background: var(--cream-2); color: #b9a68c; border-bottom-width: 2px; margin-top: 4px; }
+.tag small { font: 700 12px var(--round); color: var(--ink-soft); }
+
+.btn {
+  padding: 11px 22px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--red);
+  color: #fff;
+  font: 900 17px var(--round);
+  box-shadow: 0 5px 0 var(--red-dark);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 2px 0 var(--red-dark); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn.plain { background: #fff; color: var(--ink); box-shadow: 0 5px 0 var(--line), inset 0 0 0 2px var(--line); }
+.link-btn {
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  color: var(--red);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+
+/* Вишлист — пронумерованные строчки */
+.wishlist ol { list-style: none; counter-reset: w; margin: 4px 0; padding: 0; }
+.wishlist li { counter-increment: w; display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+.wishlist li::before {
+  content: counter(w);
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--green);
+  color: #fff;
+  font: 900 14px var(--round);
+}
+.wishlist input {
+  flex: 1;
+  min-width: 0;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  padding: 9px 12px;
+  font: 700 16px var(--round);
+  color: var(--ink);
+  outline: none;
+}
+.wishlist input:focus { border-color: var(--red); }
+.wishlist input::placeholder { color: #c3b097; font-weight: 600; }
+
+.recipient {
+  font: 900 clamp(46px, 13vw, 68px)/1 var(--round);
+  color: var(--red);
+  text-shadow: 0 4px 0 #f3c9b9;
+  margin: 2px 0 14px;
+}
+.pop { animation: pop 0.6s cubic-bezier(0.2, 1.5, 0.4, 1); }
+@keyframes pop { from { transform: scale(0.4) rotate(-6deg); opacity: 0; } }
+.recipient.secret {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 0;
+  filter: blur(14px);
+  transition: filter 0.25s;
+}
+.recipient.secret.shown { filter: none; }
+
+.their { background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; margin: 4px 0 10px; }
+.their ul { margin: 0; padding-left: 20px; }
+.their li { margin: 3px 0; font-weight: 700; }
+.their li::marker { color: var(--red); }
+
+.mine { margin-top: 12px; }
+.mine summary { cursor: pointer; font: 900 18px var(--round); }
+.personal { margin-top: 12px; padding-top: 10px; border-top: 2px dashed var(--line); }
+.personal .muted { margin-bottom: 0; }
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  background: rgba(16, 12, 36, 0.55);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+.modal { max-width: 380px; }
+
+.error {
+  background: var(--cream);
+  border-left: 5px solid var(--red);
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin: 10px 0 0;
+  width: min(460px, 100%);
+  font-weight: 700;
+}
+
+/* вишлист: ссылка и фото у пункта */
+.wishlist li { align-items: flex-start; }
+.wishlist li::before { margin-top: 8px; }
+.wish-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.wishlist .wish-link { font-size: 14px; padding: 7px 12px; }
+.chips { display: flex; gap: 6px; }
+.chip {
+  border: 0;
+  border-radius: 999px;
+  padding: 3px 10px;
+  background: var(--cream-2);
+  color: var(--ink-soft);
+  font: 800 12px var(--round);
+  cursor: pointer;
+}
+.chip:hover { background: #efdfc2; color: var(--ink); }
+.wish-photo { display: flex; align-items: center; gap: 10px; }
+.wish-photo img { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; border: 2px solid var(--line); }
+
+.their ul { list-style: none; padding: 0; }
+.their li { display: flex; gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1.5px dashed var(--line); }
+.their li:last-child { border-bottom: 0; }
+.their li > div { display: flex; flex-direction: column; min-width: 0; }
+.their a { color: var(--red); font-weight: 800; font-size: 14px; overflow-wrap: anywhere; }
+.thumb { flex: none; padding: 0; border: 0; background: none; }
+.thumb img { width: 56px; height: 56px; object-fit: cover; border-radius: 10px; border: 2px solid var(--line); display: block; }
+.big-photo { max-width: min(92vw, 640px); max-height: 80vh; border-radius: 16px; border: 6px solid #fff; }
+
+/* Бирка с именем — та же, что вылетает из подарка в 3D */
+.name-tag {
+  container-type: inline-size;
+  position: relative;
+  width: min(300px, 86%);
+  aspect-ratio: 400 / 188;
+  margin: 8px auto 16px;
+  background: #fbf3e2;
+  border: 5px solid #d23a2f;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 0 rgba(120, 60, 20, 0.12);
+}
+.name-tag::before {
+  content: '';
+  position: absolute;
+  top: 9%;
+  left: 50%;
+  width: 4.5cqw;
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: #d23a2f;
+}
+.name-tag span { font: 900 18cqw/1 var(--round); color: var(--red); white-space: nowrap; margin-top: 9%; }
+.name-tag.ghost { visibility: hidden; }
+.name-tag.flying {
+  position: fixed;
+  margin: 0;
+  z-index: 30;
+  transform-origin: 0 0;
+  pointer-events: none;
+  box-shadow: 0 24px 50px rgba(10, 6, 30, 0.45);
+}
+.pop-in { animation: tagpop 0.5s cubic-bezier(0.2, 1.6, 0.4, 1); }
+@keyframes tagpop { from { transform: scale(1.1); } }
+
+/* Карточка раскрывается от середины, как конверт */
+.card.unfold { animation: unfold 0.75s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+@keyframes unfold {
+  from { clip-path: inset(46% 0 46% 0 round 20px); opacity: 0.4; }
+  to { clip-path: inset(0 0 0 0 round 20px); opacity: 1; }
+}
+.reveal-item { opacity: 0; }
+.landed .reveal-item { animation: up 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards; animation-delay: calc(var(--i) * 110ms); }
+@keyframes up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.wishlist .wish-link.warn { border-color: #e9a23b; }
+.hint { font-size: 12px; font-weight: 700; color: #b8741a; margin-top: -2px; }
+.name-tag.secret span { filter: blur(12px); transition: filter 0.3s; }
+.name-tag.secret.shown span { filter: none; }
+.their.own { background: #fbf4e6; margin-top: 14px; }
+.box-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+.box-head h3 { margin: 0; }
+.box-head .chip { font-size: 13px; padding: 5px 12px; background: #fff; border: 2px solid var(--line); }
+.btn.wide { display: block; width: 100%; }
+.flat { margin: 0; }
+.card > .box-head { margin-bottom: 4px; min-height: 30px; }
+.chip { border: 2px solid var(--line); background: #fff; color: var(--ink); padding: 5px 12px; font-size: 13px; }
+.chip:hover { background: var(--cream-2); }
+.personal { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+.personal .chip { flex: none; }
+
+/* вишлист: название + описание */
+.wishlist .wish-title { font-weight: 800; }
+.wish-desc-input {
+  width: 100%;
+  min-height: 64px;
+  resize: vertical;
+  field-sizing: content;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  padding: 8px 12px;
+  font: 600 14px/1.4 var(--round);
+  color: var(--ink);
+  outline: none;
+}
+.wish-desc-input:focus { border-color: var(--red); }
+.wish-desc-input::placeholder { color: #c3b097; }
+.chips { flex-wrap: wrap; }
+.ghost-chip { margin-left: auto; background: transparent; border-color: transparent; color: #b9a68c; }
+.ghost-chip:hover { color: var(--red); background: transparent; }
+.add-item {
+  width: 100%;
+  margin-top: 4px;
+  padding: 10px;
+  border: 2px dashed var(--line);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ink-soft);
+  font: 800 14px var(--round);
+}
+.add-item:hover { border-color: #f0b9a4; color: var(--red); }
+.wish-name { font-weight: 800; }
+.wish-desc { margin: 2px 0 0; font-size: 14px; font-weight: 600; color: var(--ink-soft); white-space: pre-line; overflow-wrap: anywhere; }
+.wishlist li { align-items: flex-start; }
+.wishlist li::before { align-self: flex-start; margin-top: 8px; }
+.wish-del {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  margin-top: 8px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #c3b097;
+  font: 900 20px/1 var(--round);
+}
+.wish-del:hover { background: var(--cream-2); color: var(--red); }
+
+/* переключатель вкладок в карточке */
+.seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 14px;
+  border-radius: 14px;
+  background: var(--cream-2);
+}
+.seg button {
+  border: 0;
+  border-radius: 10px;
+  padding: 8px 6px;
+  background: transparent;
+  color: var(--ink-soft);
+  font: 800 14px var(--round);
+}
+.seg button.on { background: #fff; color: var(--ink); box-shadow: 0 2px 0 var(--line); }
+.all-lists { display: flex; flex-direction: column; gap: 10px; }
+.all-lists .their { margin: 0; }
+.count {
+  min-width: 26px;
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 99px;
+  display: grid;
+  place-items: center;
+  background: var(--green);
+  color: #fff;
+  font: 900 13px var(--round);
+}
+.all-lists .their.own { margin-top: 0; }
+
+/* ---------- карточки подарков ---------- */
+.wcards { display: flex; flex-direction: column; gap: 10px; }
+.wcard {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  gap: 14px;
+  padding: 12px;
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 3px 0 rgba(120, 80, 40, 0.06);
+}
+.wpic {
+  width: 84px;
+  height: 84px;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fbf1e6;
+  display: grid;
+  place-items: center;
+}
+.wpic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.wbody { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
+.wbody h4 { margin: 0; font: 900 17px/1.2 var(--round); color: var(--ink); overflow-wrap: anywhere; }
+.wprice { font: 900 16px var(--round); color: var(--green); }
+.wmore {
+  border: 0;
+  background: none;
+  padding: 2px 0;
+  color: var(--ink-soft);
+  font: 800 13px var(--round);
+}
+.wmore span { display: inline-block; transition: transform 0.2s; }
+.wmore.open span { transform: rotate(180deg); }
+.wcard .wish-desc { margin: 0 0 2px; }
+.wlink {
+  margin-top: 4px;
+  padding: 5px 12px;
+  border: 2px solid #f0c4b6;
+  border-radius: 10px;
+  color: var(--red);
+  font: 800 13px var(--round);
+  text-decoration: none;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wlink:hover { background: #fff3ee; }
+.their-plain h3 { margin-bottom: 10px; }
+.their-plain .box-head h3 { margin: 0; }
+.their-plain { margin-top: 4px; }
+
+/* загрузка вишлистов: скелетон с бликом и качающимися подарками */
+.shimmer {
+  background: linear-gradient(100deg, var(--cream-2) 30%, #fff 50%, var(--cream-2) 70%);
+  background-size: 300% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
+.sk-pill { display: block; height: 34px; border-radius: 99px; }
+.sk-card { animation: up 0.4s calc(var(--i) * 0.08s) both; }
+.sk-body { gap: 9px; padding-top: 6px; }
+.sk-line { display: block; height: 15px; border-radius: 8px; }
+.sk-line.short { height: 13px; }
+.sk-line.thin { height: 10px; opacity: 0.7; }
+.sk-gift svg { animation: wiggle 1.6s calc(var(--i) * 0.3s) ease-in-out infinite; transform-origin: 50% 85%; }
+@keyframes wiggle {
+  0%, 60%, 100% { transform: rotate(0) translateY(0); }
+  15% { transform: rotate(-9deg) translateY(-3px); }
+  30% { transform: rotate(8deg) translateY(-3px); }
+  45% { transform: rotate(-4deg) translateY(0); }
+}
+/* загруженные карточки выплывают по очереди */
+.wcard-in { display: contents; }
+.wcard-in > .wcard { animation: up 0.35s calc(var(--i) * 0.06s) both; }
+@media (prefers-reduced-motion: reduce) {
+  .shimmer, .sk-gift svg, .sk-card, .wcard-in > .wcard { animation: none; }
+}
+
+/* пустой вишлист */
+.empty-wish {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  border: 2px dashed var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.55);
+  animation: up 0.35s both;
+}
+.empty-gift {
+  position: relative;
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: #fbf1e6;
+  display: grid;
+  place-items: center;
+}
+.empty-gift svg { width: 44px; height: 44px; animation: wiggle 2.4s ease-in-out infinite; transform-origin: 50% 85%; }
+.empty-q {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--red);
+  color: #fff;
+  font: 900 14px var(--round);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+  animation: q-bob 2.4s ease-in-out infinite;
+}
+@keyframes q-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+.empty-title { margin: 0 0 2px; font: 900 16px/1.25 var(--round); color: var(--ink); }
+@media (prefers-reduced-motion: reduce) {
+  .empty-wish, .empty-gift svg, .empty-q { animation: none; }
+}
+
+/* вкладки по людям */
+.people { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.people button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 2px solid var(--line);
+  border-radius: 99px;
+  background: #fff;
+  color: var(--ink-soft);
+  font: 800 14px var(--round);
+}
+.people button.on { background: var(--ink); border-color: var(--ink); color: #fff; }
+.people .cnt {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 99px;
+  display: grid;
+  place-items: center;
+  background: var(--cream-2);
+  color: var(--ink);
+  font: 900 11px var(--round);
+}
+.people button.on .cnt { background: var(--red); color: #fff; }
+
+/* форма: название + цена в одну строку */
+.title-row { display: flex; gap: 8px; }
+.title-row .wish-title { flex: 1; min-width: 0; }
+.wishlist .wish-price { flex: 0 0 96px; width: 96px; }
+.price-field { position: relative; flex: 0 0 112px; display: block; }
+.price-field .wish-price { width: 100%; padding-right: 26px; }
+.price-field span { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font: 800 15px var(--round); color: var(--ink-soft); pointer-events: none; }
+.chip.off { background: var(--cream-2); color: var(--ink-soft); }
+.chip.off:hover { color: var(--red); }
+
+/* ---------- широкий режим: длинные списки на компьютере ---------- */
+@media (min-width: 1100px) {
+  .ui:has(.card.wide) { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .ui:has(.card.wide) .stage { grid-column: 1; grid-row: 2; align-items: center; justify-content: flex-start; padding: 20px 0 40px; }
+  .card.wide { width: min(1420px, 100%); padding: 26px 28px 24px; }
+  .card.wide > h2, .card.wide > .muted { max-width: 640px; }
+  .card.wide .seg { max-width: 420px; }
+
+  /* форма вишлиста — плитками */
+  .card.wide .wishlist ol {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 14px;
+    margin: 10px 0 12px;
+  }
+  .card.wide .wishlist li {
+    margin: 0;
+    padding: 12px 10px 12px 12px;
+    background: #fffdf8;
+    border: 2px solid var(--line);
+    border-radius: 18px;
+  }
+  .card.wide .add-item { padding: 14px; }
+  .card.wide .row { justify-content: flex-end; }
+
+  /* карточки подарков — сеткой */
+  .card.wide .wcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
+}
